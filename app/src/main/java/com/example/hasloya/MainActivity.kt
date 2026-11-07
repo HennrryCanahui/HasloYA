@@ -6,14 +6,17 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hasloya.adapter.TaskAdapter
 import com.example.hasloya.data.Task
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -116,13 +119,47 @@ class MainActivity : AppCompatActivity() {
                 }
             },
             onDeleteTask = { task ->
-                taskList.removeAll { it.id == task.id }
-                updateUI()
+                deleteTask(task)
             }
         )
 
         rvTasks.layoutManager = LinearLayoutManager(this)
         rvTasks.adapter = taskAdapter
+
+        // Swipe to delete support
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+            0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                if (position in taskList.indices) {
+                    val taskToDelete = taskList[position]
+                    deleteTask(taskToDelete, position)
+                }
+            }
+        }
+
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvTasks)
+    }
+
+    private fun deleteTask(task: Task, position: Int? = null) {
+        val deletedIndex = position ?: taskList.indexOfFirst { it.id == task.id }
+        if (deletedIndex != -1) {
+            taskList.removeAt(deletedIndex)
+            updateUI()
+
+            Snackbar.make(rvTasks, R.string.msg_task_deleted, Snackbar.LENGTH_LONG)
+                .setAction("Deshacer") {
+                    taskList.add(deletedIndex, task)
+                    updateUI()
+                }.show()
+        }
     }
 
     private fun updateUI() {
