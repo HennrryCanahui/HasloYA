@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detailRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/background">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbarDetail"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
         android:background="@color/primary"
         app:title="@string/detail_task_title"
         app:titleTextColor="@color/white"
@@ -19,8 +20,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarDetail"
+        android:layout_above="@+id/bottomNavigation"
         android:padding="16dp">
 
         <LinearLayout
@@ -93,6 +95,7 @@
                             android:paddingVertical="6dp"
                             android:textColor="@color/primary"
                             android:textSize="13sp"
+                            android:textStyle="bold"
                             tools:text="Hogar" />
                     </LinearLayout>
                 </LinearLayout>
@@ -118,7 +121,7 @@
                         android:id="@+id/tvDetailCreatedAt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         tools:text="Fecha de creación: 15/10/2026 10:30" />
 
@@ -127,7 +130,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         tools:text="Fecha de vencimiento: 20/10/2026" />
                 </LinearLayout>
@@ -162,7 +165,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:lineSpacingExtra="4dp"
                         tools:text="Esta es la descripción detallada de la tarea a realizar." />
@@ -175,6 +178,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:text="@string/action_mark_completed"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 app:cornerRadius="12dp"
                 android:layout_marginBottom="12dp" />
@@ -199,9 +203,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:text="@string/action_back"
+                android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 app:cornerRadius="12dp" />
 
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+    <!-- Bottom Navigation Bar -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/surface"
+        app:elevation="8dp"
+        app:menu="@menu/menu_bottom_nav"
+        app:itemIconTint="@color/primary"
+        app:itemTextColor="@color/text_primary" />
+
+</RelativeLayout>

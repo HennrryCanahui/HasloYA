@@ -5,12 +5,17 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.example.hasloya.data.Task
 import com.example.hasloya.data.TaskDatabaseHelper
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 
 class TaskDetailActivity : AppCompatActivity() {
@@ -29,12 +34,20 @@ class TaskDetailActivity : AppCompatActivity() {
     private lateinit var btnToggleStatus: MaterialButton
     private lateinit var btnDeleteTask: MaterialButton
     private lateinit var btnBackToList: MaterialButton
+    private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_detail)
 
         dbHelper = TaskDatabaseHelper(this)
+
+        val detailRoot = findViewById<View>(R.id.detailRoot)
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbarDetail)
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
 
         val task = intent.getSerializableExtra("extra_task", Task::class.java)
 
@@ -44,11 +57,6 @@ class TaskDetailActivity : AppCompatActivity() {
         }
 
         currentTask = task
-
-        val toolbar = findViewById<MaterialToolbar>(R.id.toolbarDetail)
-        toolbar.setNavigationOnClickListener {
-            finish()
-        }
 
         tvDetailTitle = findViewById(R.id.tvDetailTitle)
         tvDetailStatus = findViewById(R.id.tvDetailStatus)
@@ -61,7 +69,17 @@ class TaskDetailActivity : AppCompatActivity() {
         btnToggleStatus = findViewById(R.id.btnToggleStatus)
         btnDeleteTask = findViewById(R.id.btnDeleteTask)
         btnBackToList = findViewById(R.id.btnBackToList)
+        bottomNavigation = findViewById(R.id.bottomNavigation)
 
+        // Apply Window Insets for Camera Cutouts / Notch and Bottom Gesture Bar
+        ViewCompat.setOnApplyWindowInsetsListener(detailRoot) { _, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            toolbar.updatePadding(top = insets.top)
+            bottomNavigation.updatePadding(bottom = insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+
+        setupBottomNavigation()
         bindTaskDetails()
 
         btnToggleStatus.setOnClickListener {
@@ -74,6 +92,34 @@ class TaskDetailActivity : AppCompatActivity() {
 
         btnBackToList.setOnClickListener {
             finish()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bottomNavigation.selectedItemId = R.id.nav_tasks
+    }
+
+    private fun setupBottomNavigation() {
+        bottomNavigation.selectedItemId = R.id.nav_tasks
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_tasks -> {
+                    finish()
+                    true
+                }
+                R.id.nav_add -> {
+                    startActivity(Intent(this, AddTaskActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_dashboard -> {
+                    startActivity(Intent(this, DashboardActivity::class.java))
+                    finish()
+                    true
+                }
+                else -> false
+            }
         }
     }
 

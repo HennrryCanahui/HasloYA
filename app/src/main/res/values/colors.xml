@@ -11,21 +11,21 @@
     <color name="background">#F8FAFC</color>
     <color name="surface">#FFFFFF</color>
     <color name="surface_variant">#F1F5F9</color>
-    <color name="outline">#E2E8F0</color>
+    <color name="outline">#CBD5E1</color>
 
-    <color name="text_primary">#0F172A</color>
-    <color name="text_secondary">#64748B</color>
-    <color name="text_completed">#94A3B8</color>
+    <color name="text_primary">#000000</color>
+    <color name="text_secondary">#1F2937</color>
+    <color name="text_completed">#6B7280</color>
 
-    <color name="priority_high">#EF4444</color>
+    <color name="priority_high">#DC2626</color>
     <color name="priority_high_bg">#FEE2E2</color>
-    <color name="priority_medium">#F59E0B</color>
+    <color name="priority_medium">#D97706</color>
     <color name="priority_medium_bg">#FEF3C7</color>
-    <color name="priority_low">#10B981</color>
+    <color name="priority_low">#059669</color>
     <color name="priority_low_bg">#D1FAE5</color>
 
-    <color name="status_completed">#10B981</color>
-    <color name="status_pending">#F59E0B</color>
+    <color name="status_completed">#059669</color>
+    <color name="status_pending">#D97706</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>

@@ -4,8 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +17,7 @@ import com.example.hasloya.adapter.TaskAdapter
 import com.example.hasloya.data.Task
 import com.example.hasloya.data.TaskDatabaseHelper
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
@@ -21,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rvTasks: RecyclerView
     private lateinit var layoutEmptyState: LinearLayout
     private lateinit var fabAddTask: FloatingActionButton
+    private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var taskAdapter: TaskAdapter
     private lateinit var dbHelper: TaskDatabaseHelper
 
@@ -45,26 +51,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         dbHelper = TaskDatabaseHelper(this)
 
+        val mainRoot = findViewById<View>(R.id.mainRoot)
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbarMain)
-        toolbar.setOnMenuItemClickListener { menuItem ->
-            if (menuItem.itemId == R.id.action_dashboard) {
-                val intent = Intent(this, DashboardActivity::class.java)
-                startActivity(intent)
-                true
-            } else {
-                false
-            }
-        }
-
         rvTasks = findViewById(R.id.rvTasks)
         layoutEmptyState = findViewById(R.id.layoutEmptyState)
         fabAddTask = findViewById(R.id.fabAddTask)
+        bottomNavigation = findViewById(R.id.bottomNavigation)
 
+        // Apply Window Insets for Camera Cutouts / Notch and Bottom Gesture Bar
+        ViewCompat.setOnApplyWindowInsetsListener(mainRoot) { _, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            toolbar.updatePadding(top = insets.top)
+            bottomNavigation.updatePadding(bottom = insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+
+        setupBottomNavigation()
         setupRecyclerView()
 
         fabAddTask.setOnClickListener {
@@ -75,7 +83,28 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        bottomNavigation.selectedItemId = R.id.nav_tasks
         loadTasksFromDatabase()
+    }
+
+    private fun setupBottomNavigation() {
+        bottomNavigation.selectedItemId = R.id.nav_tasks
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_tasks -> true
+                R.id.nav_add -> {
+                    val intent = Intent(this, AddTaskActivity::class.java)
+                    addTaskLauncher.launch(intent)
+                    true
+                }
+                R.id.nav_dashboard -> {
+                    val intent = Intent(this, DashboardActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun loadTasksFromDatabase() {

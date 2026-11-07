@@ -4,13 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hasloya.adapter.TaskAdapter
 import com.example.hasloya.data.Task
 import com.example.hasloya.data.TaskDatabaseHelper
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.progressindicator.LinearProgressIndicator
 
@@ -26,6 +31,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var chipGroupFilter: ChipGroup
     private lateinit var rvDashboardTasks: RecyclerView
     private lateinit var tvDashboardEmpty: TextView
+    private lateinit var bottomNavigation: BottomNavigationView
 
     private lateinit var taskAdapter: TaskAdapter
     private val allTasks = mutableListOf<Task>()
@@ -38,11 +44,13 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
         dbHelper = TaskDatabaseHelper(this)
 
+        val dashboardRoot = findViewById<View>(R.id.dashboardRoot)
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbarDashboard)
         toolbar.setNavigationOnClickListener {
             finish()
@@ -56,14 +64,44 @@ class DashboardActivity : AppCompatActivity() {
         chipGroupFilter = findViewById(R.id.chipGroupFilter)
         rvDashboardTasks = findViewById(R.id.rvDashboardTasks)
         tvDashboardEmpty = findViewById(R.id.tvDashboardEmpty)
+        bottomNavigation = findViewById(R.id.bottomNavigation)
 
+        // Apply Window Insets for Camera Cutouts / Notch and Bottom Gesture Bar
+        ViewCompat.setOnApplyWindowInsetsListener(dashboardRoot) { _, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            toolbar.updatePadding(top = insets.top)
+            bottomNavigation.updatePadding(bottom = insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+
+        setupBottomNavigation()
         setupRecyclerView()
         setupFilters()
     }
 
     override fun onResume() {
         super.onResume()
+        bottomNavigation.selectedItemId = R.id.nav_dashboard
         loadDashboardData()
+    }
+
+    private fun setupBottomNavigation() {
+        bottomNavigation.selectedItemId = R.id.nav_dashboard
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_dashboard -> true
+                R.id.nav_tasks -> {
+                    finish()
+                    true
+                }
+                R.id.nav_add -> {
+                    startActivity(Intent(this, AddTaskActivity::class.java))
+                    finish()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun setupRecyclerView() {

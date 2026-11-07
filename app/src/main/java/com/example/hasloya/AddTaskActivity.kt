@@ -3,13 +3,19 @@ package com.example.hasloya
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.example.hasloya.data.Task
 import com.example.hasloya.data.TaskDatabaseHelper
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -31,16 +37,19 @@ class AddTaskActivity : AppCompatActivity() {
     private lateinit var etDueDate: TextInputEditText
     private lateinit var btnSaveTask: MaterialButton
     private lateinit var btnCancel: MaterialButton
+    private lateinit var bottomNavigation: BottomNavigationView
 
     private lateinit var dbHelper: TaskDatabaseHelper
     private var selectedDueDate: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
 
         dbHelper = TaskDatabaseHelper(this)
 
+        val addTaskRoot = findViewById<View>(R.id.addTaskRoot)
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbarAddTask)
         toolbar.setNavigationOnClickListener {
             finish()
@@ -54,7 +63,17 @@ class AddTaskActivity : AppCompatActivity() {
         etDueDate = findViewById(R.id.etDueDate)
         btnSaveTask = findViewById(R.id.btnSaveTask)
         btnCancel = findViewById(R.id.btnCancel)
+        bottomNavigation = findViewById(R.id.bottomNavigation)
 
+        // Apply Window Insets for Camera Cutouts / Notch and Bottom Gesture Bar
+        ViewCompat.setOnApplyWindowInsetsListener(addTaskRoot) { _, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            toolbar.updatePadding(top = insets.top)
+            bottomNavigation.updatePadding(bottom = insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+
+        setupBottomNavigation()
         setupDropdowns()
         setupDatePicker()
 
@@ -64,6 +83,30 @@ class AddTaskActivity : AppCompatActivity() {
 
         btnCancel.setOnClickListener {
             finish()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bottomNavigation.selectedItemId = R.id.nav_add
+    }
+
+    private fun setupBottomNavigation() {
+        bottomNavigation.selectedItemId = R.id.nav_add
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_add -> true
+                R.id.nav_tasks -> {
+                    finish()
+                    true
+                }
+                R.id.nav_dashboard -> {
+                    startActivity(Intent(this, DashboardActivity::class.java))
+                    finish()
+                    true
+                }
+                else -> false
+            }
         }
     }
 
