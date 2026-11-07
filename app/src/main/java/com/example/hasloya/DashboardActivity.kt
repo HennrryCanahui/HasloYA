@@ -106,7 +106,7 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         taskAdapter = TaskAdapter(
-            tasks = mutableListOf(),
+            initialTasks = mutableListOf(),
             onItemClick = { task ->
                 val intent = Intent(this, TaskDetailActivity::class.java).apply {
                     putExtra("extra_task", task)

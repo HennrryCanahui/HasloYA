@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         taskAdapter = TaskAdapter(
-            tasks = taskList,
+            initialTasks = taskList,
             onItemClick = { task ->
                 val intent = Intent(this, TaskDetailActivity::class.java).apply {
                     putExtra("extra_task", task)

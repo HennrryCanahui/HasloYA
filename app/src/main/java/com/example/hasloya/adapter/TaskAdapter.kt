@@ -14,11 +14,13 @@ import com.example.hasloya.R
 import com.example.hasloya.data.Task
 
 class TaskAdapter(
-    private var tasks: MutableList<Task> = mutableListOf(),
+    initialTasks: List<Task> = emptyList(),
     private val onItemClick: (Task) -> Unit,
     private val onTaskStatusChanged: (Task, Boolean) -> Unit,
     private val onDeleteTask: (Task) -> Unit,
 ) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+
+    private val tasks: MutableList<Task> = initialTasks.toMutableList()
 
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cbCompleted: CheckBox = itemView.findViewById(R.id.cbCompleted)
