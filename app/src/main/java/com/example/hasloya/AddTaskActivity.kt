@@ -9,6 +9,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.hasloya.data.Task
+import com.example.hasloya.data.TaskDatabaseHelper
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -32,11 +33,14 @@ class AddTaskActivity : AppCompatActivity() {
     private lateinit var btnSaveTask: MaterialButton
     private lateinit var btnCancel: MaterialButton
 
+    private lateinit var dbHelper: TaskDatabaseHelper
     private var selectedDueDate: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
+
+        dbHelper = TaskDatabaseHelper(this)
 
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbarAddTask)
         toolbar.setNavigationOnClickListener {
@@ -72,7 +76,7 @@ class AddTaskActivity : AppCompatActivity() {
         )
         val priorityAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, priorities)
         actvPriority.setAdapter(priorityAdapter)
-        actvPriority.setText(priorities[1], false) // Default: Media
+        actvPriority.setText(priorities[1], false)
 
         val categories = arrayOf(
             getString(R.string.category_personal),
@@ -83,7 +87,7 @@ class AddTaskActivity : AppCompatActivity() {
         )
         val categoryAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categories)
         actvCategory.setAdapter(categoryAdapter)
-        actvCategory.setText(categories[0], false) // Default: Personal
+        actvCategory.setText(categories[0], false)
     }
 
     private fun setupDatePicker() {
@@ -131,8 +135,11 @@ class AddTaskActivity : AppCompatActivity() {
             dueDate = dueDate
         )
 
+        val insertedId = dbHelper.insertTask(newTask)
+        val taskWithId = newTask.copy(id = insertedId)
+
         val resultIntent = Intent().apply {
-            putExtra(EXTRA_TASK, newTask)
+            putExtra(EXTRA_TASK, taskWithId)
         }
         setResult(Activity.RESULT_OK, resultIntent)
         Toast.makeText(this, R.string.msg_task_saved, Toast.LENGTH_SHORT).show()

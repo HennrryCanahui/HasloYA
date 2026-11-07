@@ -11,12 +11,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.hasloya.data.Task
+import com.example.hasloya.data.TaskDatabaseHelper
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 
 class TaskDetailActivity : AppCompatActivity() {
 
     private lateinit var currentTask: Task
+    private lateinit var dbHelper: TaskDatabaseHelper
 
     private lateinit var tvDetailTitle: TextView
     private lateinit var tvDetailStatus: TextView
@@ -33,6 +35,8 @@ class TaskDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_detail)
+
+        dbHelper = TaskDatabaseHelper(this)
 
         val task = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("extra_task", Task::class.java)
@@ -121,7 +125,9 @@ class TaskDetailActivity : AppCompatActivity() {
     }
 
     private fun toggleStatus() {
-        currentTask = currentTask.copy(isCompleted = !currentTask.isCompleted)
+        val newStatus = !currentTask.isCompleted
+        currentTask = currentTask.copy(isCompleted = newStatus)
+        dbHelper.updateTaskStatus(currentTask.id, newStatus)
         bindTaskDetails()
 
         val resultIntent = Intent().apply {
@@ -135,6 +141,7 @@ class TaskDetailActivity : AppCompatActivity() {
             .setTitle(R.string.confirm_delete_title)
             .setMessage(R.string.confirm_delete_msg)
             .setPositiveButton(R.string.dialog_yes) { _, _ ->
+                dbHelper.deleteTask(currentTask.id)
                 val resultIntent = Intent().apply {
                     putExtra("deleted_task_id", currentTask.id)
                 }

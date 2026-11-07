@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hasloya.adapter.TaskAdapter
 import com.example.hasloya.data.Task
+import com.example.hasloya.data.TaskDatabaseHelper
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -24,9 +24,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var layoutEmptyState: LinearLayout
     private lateinit var fabAddTask: FloatingActionButton
     private lateinit var taskAdapter: TaskAdapter
+    private lateinit var dbHelper: TaskDatabaseHelper
 
     private val taskList = mutableListOf<Task>()
-    private var nextId = 1L
 
     private val addTaskLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -40,47 +40,28 @@ class MainActivity : AppCompatActivity() {
             }
 
             newTask?.let { task ->
-                val taskWithId = task.copy(id = nextId++)
-                taskList.add(0, taskWithId)
-                updateUI()
+                dbHelper.insertTask(task)
+                loadTasksFromDatabase()
             }
         }
     }
 
     private val detailTaskLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val updatedTask = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                result.data?.getSerializableExtra("updated_task", Task::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                result.data?.getSerializableExtra("updated_task") as? Task
-            }
-            val deletedTaskId = result.data?.getLongExtra("deleted_task_id", -1L) ?: -1L
-
-            if (deletedTaskId != -1L) {
-                taskList.removeAll { it.id == deletedTaskId }
-                updateUI()
-            } else updatedTask?.let { task ->
-                val index = taskList.indexOfFirst { it.id == task.id }
-                if (index != -1) {
-                    taskList[index] = task
-                    updateUI()
-                }
-            }
-        }
+    ) {
+        loadTasksFromDatabase()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        dbHelper = TaskDatabaseHelper(this)
+
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbarMain)
         toolbar.setOnMenuItemClickListener { menuItem ->
             if (menuItem.itemId == R.id.action_dashboard) {
                 val intent = Intent(this, DashboardActivity::class.java)
-                intent.putExtra("task_list", ArrayList(taskList))
                 startActivity(intent)
                 true
             } else {
@@ -98,7 +79,16 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, AddTaskActivity::class.java)
             addTaskLauncher.launch(intent)
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        loadTasksFromDatabase()
+    }
+
+    private fun loadTasksFromDatabase() {
+        taskList.clear()
+        taskList.addAll(dbHelper.getAllTasks())
         updateUI()
     }
 
@@ -112,11 +102,8 @@ class MainActivity : AppCompatActivity() {
                 detailTaskLauncher.launch(intent)
             },
             onTaskStatusChanged = { task, isCompleted ->
-                val index = taskList.indexOfFirst { it.id == task.id }
-                if (index != -1) {
-                    taskList[index] = task.copy(isCompleted = isCompleted)
-                    updateUI()
-                }
+                dbHelper.updateTaskStatus(task.id, isCompleted)
+                loadTasksFromDatabase()
             },
             onDeleteTask = { task ->
                 deleteTask(task)
@@ -126,7 +113,6 @@ class MainActivity : AppCompatActivity() {
         rvTasks.layoutManager = LinearLayoutManager(this)
         rvTasks.adapter = taskAdapter
 
-        // Swipe to delete support
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
             0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         ) {
@@ -140,7 +126,7 @@ class MainActivity : AppCompatActivity() {
                 val position = viewHolder.adapterPosition
                 if (position in taskList.indices) {
                     val taskToDelete = taskList[position]
-                    deleteTask(taskToDelete, position)
+                    deleteTask(taskToDelete)
                 }
             }
         }
@@ -148,18 +134,15 @@ class MainActivity : AppCompatActivity() {
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvTasks)
     }
 
-    private fun deleteTask(task: Task, position: Int? = null) {
-        val deletedIndex = position ?: taskList.indexOfFirst { it.id == task.id }
-        if (deletedIndex != -1) {
-            taskList.removeAt(deletedIndex)
-            updateUI()
+    private fun deleteTask(task: Task) {
+        dbHelper.deleteTask(task.id)
+        loadTasksFromDatabase()
 
-            Snackbar.make(rvTasks, R.string.msg_task_deleted, Snackbar.LENGTH_LONG)
-                .setAction("Deshacer") {
-                    taskList.add(deletedIndex, task)
-                    updateUI()
-                }.show()
-        }
+        Snackbar.make(rvTasks, R.string.msg_task_deleted, Snackbar.LENGTH_LONG)
+            .setAction("Deshacer") {
+                dbHelper.insertTask(task)
+                loadTasksFromDatabase()
+            }.show()
     }
 
     private fun updateUI() {
