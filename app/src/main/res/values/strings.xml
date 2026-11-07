@@ -12,7 +12,10 @@
     <string name="category_label">Categoría</string>
     <string name="due_date_label">Fecha de vencimiento (opcional)</string>
     <string name="created_at_label">Fecha de creación:</string>
+    <string name="due_date_prefix">Fecha de vencimiento:</string>
     <string name="status_label">Estado:</string>
+    <string name="detail_description_title">Descripción</string>
+    <string name="detail_no_description">Sin descripción adicional</string>
 
     <!-- Options -->
     <string name="priority_high">Alta</string>
@@ -39,6 +42,8 @@
     <string name="action_dashboard">Dashboard</string>
 
     <!-- Dashboard & Stats -->
+    <string name="dashboard_summary_title">Resumen General</string>
+    <string name="dashboard_filter_title">Filtrar Tareas</string>
     <string name="stat_total">Total Tareas</string>
     <string name="stat_pending">Pendientes</string>
     <string name="stat_completed">Completadas</string>

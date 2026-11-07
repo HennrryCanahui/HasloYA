@@ -89,7 +89,7 @@ class TaskDetailActivity : AppCompatActivity() {
         tvDetailCategory.text = currentTask.category
 
         if (currentTask.description.isBlank()) {
-            tvDetailDescription.text = "Sin descripción adicional"
+            tvDetailDescription.text = getString(R.string.detail_no_description)
         } else {
             tvDetailDescription.text = currentTask.description
         }
@@ -99,13 +99,13 @@ class TaskDetailActivity : AppCompatActivity() {
 
         if (currentTask.dueDate.isNotBlank()) {
             tvDetailDueDate.visibility = View.VISIBLE
-            tvDetailDueDate.text = "Fecha de vencimiento: ${currentTask.dueDate}"
+            tvDetailDueDate.text = "${getString(R.string.due_date_prefix)} ${currentTask.dueDate}"
         } else {
             tvDetailDueDate.visibility = View.GONE
         }
 
         // Priority
-        tvDetailPriority.text = "Prioridad: ${currentTask.priority}"
+        tvDetailPriority.text = "${getString(R.string.priority_label)}: ${currentTask.priority}"
         when (currentTask.priority.lowercase()) {
             "alta" -> tvDetailPriority.setTextColor(ContextCompat.getColor(this, R.color.priority_high))
             "media" -> tvDetailPriority.setTextColor(ContextCompat.getColor(this, R.color.priority_medium))
@@ -114,11 +114,11 @@ class TaskDetailActivity : AppCompatActivity() {
 
         // Status
         if (currentTask.isCompleted) {
-            tvDetailStatus.text = "Estado: ${getString(R.string.status_completed)}"
+            tvDetailStatus.text = "${getString(R.string.status_label)} ${getString(R.string.status_completed)}"
             tvDetailStatus.setTextColor(ContextCompat.getColor(this, R.color.status_completed))
             btnToggleStatus.text = getString(R.string.action_mark_pending)
         } else {
-            tvDetailStatus.text = "Estado: ${getString(R.string.status_pending)}"
+            tvDetailStatus.text = "${getString(R.string.status_label)} ${getString(R.string.status_pending)}"
             tvDetailStatus.setTextColor(ContextCompat.getColor(this, R.color.status_pending))
             btnToggleStatus.text = getString(R.string.action_mark_completed)
         }

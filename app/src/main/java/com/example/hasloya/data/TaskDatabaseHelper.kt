@@ -36,6 +36,41 @@ class TaskDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
             )
         """.trimIndent()
         db.execSQL(createTableQuery)
+
+        // Insert initial demo tasks
+        val sampleTasks = listOf(
+            ContentValues().apply {
+                put(COLUMN_TITLE, "Revisar arquitectura del proyecto")
+                put(COLUMN_DESCRIPTION, "Verificar la estructura de carpetas, la base de datos local y componentes Material 3.")
+                put(COLUMN_IS_COMPLETED, 1)
+                put(COLUMN_PRIORITY, "Alta")
+                put(COLUMN_CATEGORY, "Trabajo")
+                put(COLUMN_CREATED_AT, "15/10/2026 09:00")
+                put(COLUMN_DUE_DATE, "16/10/2026")
+            },
+            ContentValues().apply {
+                put(COLUMN_TITLE, "Comprar despensa semanal")
+                put(COLUMN_DESCRIPTION, "Leche, huevos, pan integral, frutas frescas y verduras.")
+                put(COLUMN_IS_COMPLETED, 0)
+                put(COLUMN_PRIORITY, "Media")
+                put(COLUMN_CATEGORY, "Hogar")
+                put(COLUMN_CREATED_AT, "15/10/2026 10:15")
+                put(COLUMN_DUE_DATE, "18/10/2026")
+            },
+            ContentValues().apply {
+                put(COLUMN_TITLE, "Estudiar Jetpack Compose y Material 3")
+                put(COLUMN_DESCRIPTION, "Repasar las guías oficiales y mejores prácticas de UI en Android.")
+                put(COLUMN_IS_COMPLETED, 0)
+                put(COLUMN_PRIORITY, "Baja")
+                put(COLUMN_CATEGORY, "Estudio")
+                put(COLUMN_CREATED_AT, "15/10/2026 11:30")
+                put(COLUMN_DUE_DATE, "20/10/2026")
+            }
+        )
+
+        for (values in sampleTasks) {
+            db.insert(TABLE_TASKS, null, values)
+        }
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
