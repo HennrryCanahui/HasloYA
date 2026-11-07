@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbarDetail"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        app:title="@string/detail_task_title"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationIconTint="@color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Card Header: Title and Status -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/outline">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:id="@+id/tvDetailTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_primary"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        tools:text="Comprar despensa semanal" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="12dp">
+
+                        <TextView
+                            android:id="@+id/tvDetailStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_chip_priority"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="Estado: Pendiente" />
+
+                        <TextView
+                            android:id="@+id/tvDetailPriority"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:background="@drawable/bg_chip_priority"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="6dp"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            tools:text="Prioridad: Alta" />
+
+                        <TextView
+                            android:id="@+id/tvDetailCategory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:background="@drawable/bg_chip_category"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="6dp"
+                            android:textColor="@color/primary"
+                            android:textSize="13sp"
+                            tools:text="Hogar" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card Meta: Dates -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/outline">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:id="@+id/tvDetailCreatedAt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        tools:text="Fecha de creación: 15/10/2026 10:30" />
+
+                    <TextView
+                        android:id="@+id/tvDetailDueDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        tools:text="Fecha de vencimiento: 20/10/2026" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card Description -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/outline">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Descripción"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvDetailDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="15sp"
+                        android:lineSpacingExtra="4dp"
+                        tools:text="Esta es la descripción detallada de la tarea a realizar." />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Toggle Status Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToggleStatus"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/action_mark_completed"
+                android:textSize="16sp"
+                app:cornerRadius="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Delete Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeleteTask"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/action_delete"
+                android:textColor="@color/priority_high"
+                android:textSize="16sp"
+                app:strokeColor="@color/priority_high"
+                app:cornerRadius="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Back Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBackToList"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/action_back"
+                android:textSize="16sp"
+                app:cornerRadius="12dp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
