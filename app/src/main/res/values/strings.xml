@@ -1,3 +1,60 @@
 <resources>
     <string name="app_name">HasloYa</string>
+    <string name="main_title">Mis Tareas</string>
+    <string name="add_task_title">Nueva Tarea</string>
+    <string name="detail_task_title">Detalles de Tarea</string>
+    <string name="dashboard_title">Dashboard y Resumen</string>
+
+    <!-- Task Fields -->
+    <string name="title_hint">Título de la tarea</string>
+    <string name="description_hint">Descripción detallada</string>
+    <string name="priority_label">Prioridad</string>
+    <string name="category_label">Categoría</string>
+    <string name="due_date_label">Fecha de vencimiento (opcional)</string>
+    <string name="created_at_label">Fecha de creación:</string>
+    <string name="status_label">Estado:</string>
+
+    <!-- Options -->
+    <string name="priority_high">Alta</string>
+    <string name="priority_medium">Media</string>
+    <string name="priority_low">Baja</string>
+
+    <string name="category_personal">Personal</string>
+    <string name="category_work">Trabajo</string>
+    <string name="category_study">Estudio</string>
+    <string name="category_home">Hogar</string>
+    <string name="category_other">Otro</string>
+
+    <string name="status_pending">Pendiente</string>
+    <string name="status_completed">Completada</string>
+
+    <!-- Actions -->
+    <string name="action_save">Guardar Tarea</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_mark_completed">Marcar como Completada</string>
+    <string name="action_mark_pending">Marcar como Pendiente</string>
+    <string name="action_delete">Eliminar Tarea</string>
+    <string name="action_back">Volver a la lista</string>
+    <string name="action_add">Agregar Tarea</string>
+    <string name="action_dashboard">Dashboard</string>
+
+    <!-- Dashboard & Stats -->
+    <string name="stat_total">Total Tareas</string>
+    <string name="stat_pending">Pendientes</string>
+    <string name="stat_completed">Completadas</string>
+    <string name="stat_progress">Progreso General</string>
+    <string name="filter_all">Todas</string>
+    <string name="filter_pending">Pendientes</string>
+    <string name="filter_completed">Completadas</string>
+
+    <!-- Empty State & Messages -->
+    <string name="empty_tasks">No tienes tareas registradas.\n¡Toca + para agregar una nueva!</string>
+    <string name="empty_filtered_tasks">No hay tareas que coincidan con este filtro.</string>
+    <string name="error_empty_title">El título de la tarea no puede estar vacío</string>
+    <string name="msg_task_saved">Tarea guardada con éxito</string>
+    <string name="msg_task_deleted">Tarea eliminada</string>
+    <string name="confirm_delete_title">¿Eliminar tarea?</string>
+    <string name="confirm_delete_msg">Esta acción no se puede deshacer.</string>
+    <string name="dialog_yes">Sí, eliminar</string>
+    <string name="dialog_no">Cancelar</string>
 </resources>
