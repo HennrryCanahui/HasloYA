@@ -28,7 +28,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var tvDashboardEmpty: TextView
 
     private lateinit var taskAdapter: TaskAdapter
-    private var allTasks = mutableListOf<Task>()
+    private val allTasks = mutableListOf<Task>()
     private var selectedFilter = FILTER_ALL
 
     companion object {
@@ -82,7 +82,7 @@ class DashboardActivity : AppCompatActivity() {
             onDeleteTask = { task ->
                 dbHelper.deleteTask(task.id)
                 loadDashboardData()
-            }
+            },
         )
 
         rvDashboardTasks.layoutManager = LinearLayoutManager(this)
@@ -113,7 +113,7 @@ class DashboardActivity : AppCompatActivity() {
         tvStatCompleted.text = completed.toString()
 
         val percentage = if (total > 0) (completed * 100) / total else 0
-        tvStatPercentage.text = "$percentage%"
+        tvStatPercentage.text = getString(R.string.stat_percentage_format, percentage)
         progressBarTasks.setProgress(percentage, true)
 
         applyCurrentFilter()

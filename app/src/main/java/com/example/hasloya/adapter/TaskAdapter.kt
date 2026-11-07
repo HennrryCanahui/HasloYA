@@ -1,5 +1,6 @@
 package com.example.hasloya.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,7 @@ class TaskAdapter(
     private var tasks: MutableList<Task> = mutableListOf(),
     private val onItemClick: (Task) -> Unit,
     private val onTaskStatusChanged: (Task, Boolean) -> Unit,
-    private val onDeleteTask: (Task) -> Unit
+    private val onDeleteTask: (Task) -> Unit,
 ) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -96,11 +97,10 @@ class TaskAdapter(
 
     override fun getItemCount(): Int = tasks.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateTasks(newTasks: List<Task>) {
         tasks.clear()
         tasks.addAll(newTasks)
         notifyDataSetChanged()
     }
-
-    fun getTasks(): List<Task> = tasks
 }

@@ -1,8 +1,6 @@
 package com.example.hasloya
 
-import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -29,16 +27,10 @@ class MainActivity : AppCompatActivity() {
     private val taskList = mutableListOf<Task>()
 
     private val addTaskLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
+        ActivityResultContracts.StartActivityForResult(),
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val newTask = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                result.data?.getSerializableExtra(AddTaskActivity.EXTRA_TASK, Task::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                result.data?.getSerializableExtra(AddTaskActivity.EXTRA_TASK) as? Task
-            }
-
+        if (result.resultCode == RESULT_OK) {
+            val newTask = result.data?.getSerializableExtra(AddTaskActivity.EXTRA_TASK, Task::class.java)
             newTask?.let { task ->
                 dbHelper.insertTask(task)
                 loadTasksFromDatabase()
@@ -47,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val detailTaskLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
+        ActivityResultContracts.StartActivityForResult(),
     ) {
         loadTasksFromDatabase()
     }
@@ -107,23 +99,23 @@ class MainActivity : AppCompatActivity() {
             },
             onDeleteTask = { task ->
                 deleteTask(task)
-            }
+            },
         )
 
         rvTasks.layoutManager = LinearLayoutManager(this)
         rvTasks.adapter = taskAdapter
 
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
-            0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
         ) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
+                target: RecyclerView.ViewHolder,
             ): Boolean = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
+                val position = viewHolder.bindingAdapterPosition
                 if (position in taskList.indices) {
                     val taskToDelete = taskList[position]
                     deleteTask(taskToDelete)

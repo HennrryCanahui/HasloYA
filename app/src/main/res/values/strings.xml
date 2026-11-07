@@ -48,6 +48,7 @@
     <string name="stat_pending">Pendientes</string>
     <string name="stat_completed">Completadas</string>
     <string name="stat_progress">Progreso General</string>
+    <string name="stat_percentage_format">%1$d%%</string>
     <string name="filter_all">Todas</string>
     <string name="filter_pending">Pendientes</string>
     <string name="filter_completed">Completadas</string>

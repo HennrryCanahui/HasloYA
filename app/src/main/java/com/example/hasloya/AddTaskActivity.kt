@@ -1,6 +1,5 @@
 package com.example.hasloya
 
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
@@ -72,7 +71,7 @@ class AddTaskActivity : AppCompatActivity() {
         val priorities = arrayOf(
             getString(R.string.priority_high),
             getString(R.string.priority_medium),
-            getString(R.string.priority_low)
+            getString(R.string.priority_low),
         )
         val priorityAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, priorities)
         actvPriority.setAdapter(priorityAdapter)
@@ -83,7 +82,7 @@ class AddTaskActivity : AppCompatActivity() {
             getString(R.string.category_work),
             getString(R.string.category_study),
             getString(R.string.category_home),
-            getString(R.string.category_other)
+            getString(R.string.category_other),
         )
         val categoryAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categories)
         actvCategory.setAdapter(categoryAdapter)
@@ -93,16 +92,22 @@ class AddTaskActivity : AppCompatActivity() {
     private fun setupDatePicker() {
         etDueDate.setOnClickListener {
             val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val year = calendar[Calendar.YEAR]
+            val month = calendar[Calendar.MONTH]
+            val day = calendar[Calendar.DAY_OF_MONTH]
 
-            val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
-                val formattedMonth = String.format(Locale.getDefault(), "%02d", selectedMonth + 1)
-                val formattedDay = String.format(Locale.getDefault(), "%02d", selectedDay)
-                selectedDueDate = "$formattedDay/$formattedMonth/$selectedYear"
-                etDueDate.setText(selectedDueDate)
-            }, year, month, day)
+            val datePickerDialog = DatePickerDialog(
+                this,
+                { _, selectedYear, selectedMonth, selectedDay ->
+                    val formattedMonth = String.format(Locale.getDefault(), "%02d", selectedMonth + 1)
+                    val formattedDay = String.format(Locale.getDefault(), "%02d", selectedDay)
+                    selectedDueDate = "$formattedDay/$formattedMonth/$selectedYear"
+                    etDueDate.setText(selectedDueDate)
+                },
+                year,
+                month,
+                day,
+            )
 
             datePickerDialog.show()
         }
@@ -132,7 +137,7 @@ class AddTaskActivity : AppCompatActivity() {
             priority = priority,
             category = category,
             createdAt = createdAt,
-            dueDate = dueDate
+            dueDate = dueDate,
         )
 
         val insertedId = dbHelper.insertTask(newTask)
@@ -141,7 +146,7 @@ class AddTaskActivity : AppCompatActivity() {
         val resultIntent = Intent().apply {
             putExtra(EXTRA_TASK, taskWithId)
         }
-        setResult(Activity.RESULT_OK, resultIntent)
+        setResult(RESULT_OK, resultIntent)
         Toast.makeText(this, R.string.msg_task_saved, Toast.LENGTH_SHORT).show()
         finish()
     }

@@ -1,8 +1,6 @@
 package com.example.hasloya
 
-import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -38,12 +36,7 @@ class TaskDetailActivity : AppCompatActivity() {
 
         dbHelper = TaskDatabaseHelper(this)
 
-        val task = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getSerializableExtra("extra_task", Task::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getSerializableExtra("extra_task") as? Task
-        }
+        val task = intent.getSerializableExtra("extra_task", Task::class.java)
 
         if (task == null) {
             finish()
@@ -94,18 +87,20 @@ class TaskDetailActivity : AppCompatActivity() {
             tvDetailDescription.text = currentTask.description
         }
 
-        val createdAtText = "${getString(R.string.created_at_label)} ${currentTask.createdAt}"
+        val createdAtText = getString(R.string.created_at_label) + " " + currentTask.createdAt
         tvDetailCreatedAt.text = createdAtText
 
         if (currentTask.dueDate.isNotBlank()) {
             tvDetailDueDate.visibility = View.VISIBLE
-            tvDetailDueDate.text = "${getString(R.string.due_date_prefix)} ${currentTask.dueDate}"
+            val dueDateText = getString(R.string.due_date_prefix) + " " + currentTask.dueDate
+            tvDetailDueDate.text = dueDateText
         } else {
             tvDetailDueDate.visibility = View.GONE
         }
 
         // Priority
-        tvDetailPriority.text = "${getString(R.string.priority_label)}: ${currentTask.priority}"
+        val priorityText = getString(R.string.priority_label) + ": " + currentTask.priority
+        tvDetailPriority.text = priorityText
         when (currentTask.priority.lowercase()) {
             "alta" -> tvDetailPriority.setTextColor(ContextCompat.getColor(this, R.color.priority_high))
             "media" -> tvDetailPriority.setTextColor(ContextCompat.getColor(this, R.color.priority_medium))
@@ -114,11 +109,13 @@ class TaskDetailActivity : AppCompatActivity() {
 
         // Status
         if (currentTask.isCompleted) {
-            tvDetailStatus.text = "${getString(R.string.status_label)} ${getString(R.string.status_completed)}"
+            val statusCompletedText = getString(R.string.status_label) + " " + getString(R.string.status_completed)
+            tvDetailStatus.text = statusCompletedText
             tvDetailStatus.setTextColor(ContextCompat.getColor(this, R.color.status_completed))
             btnToggleStatus.text = getString(R.string.action_mark_pending)
         } else {
-            tvDetailStatus.text = "${getString(R.string.status_label)} ${getString(R.string.status_pending)}"
+            val statusPendingText = getString(R.string.status_label) + " " + getString(R.string.status_pending)
+            tvDetailStatus.text = statusPendingText
             tvDetailStatus.setTextColor(ContextCompat.getColor(this, R.color.status_pending))
             btnToggleStatus.text = getString(R.string.action_mark_completed)
         }
@@ -133,7 +130,7 @@ class TaskDetailActivity : AppCompatActivity() {
         val resultIntent = Intent().apply {
             putExtra("updated_task", currentTask)
         }
-        setResult(Activity.RESULT_OK, resultIntent)
+        setResult(RESULT_OK, resultIntent)
     }
 
     private fun showDeleteConfirmationDialog() {
@@ -145,7 +142,7 @@ class TaskDetailActivity : AppCompatActivity() {
                 val resultIntent = Intent().apply {
                     putExtra("deleted_task_id", currentTask.id)
                 }
-                setResult(Activity.RESULT_OK, resultIntent)
+                setResult(RESULT_OK, resultIntent)
                 Toast.makeText(this, R.string.msg_task_deleted, Toast.LENGTH_SHORT).show()
                 finish()
             }
